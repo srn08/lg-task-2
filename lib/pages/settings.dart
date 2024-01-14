@@ -1,5 +1,3 @@
-// import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lg_kiss_app/providers/connection_providers.dart';
@@ -70,6 +68,16 @@ class _SettingsState extends ConsumerState<Settings> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    ipController.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
+    portController.dispose();
+    rigsController.dispose();
+    super.dispose();
   }
 
   @override

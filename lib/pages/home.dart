@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:dartssh2/dartssh2.dart';
+import 'package:flutter/services.dart';
 import 'package:lg_kiss_app/connections/ssh.dart';
 import 'package:lg_kiss_app/constants/theme.dart';
 import 'package:lg_kiss_app/pages/settings.dart';
@@ -31,6 +30,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
   late AnimationController _earthController;
   late AnimationController _moonController;
   late AnimationController _marsController;
+  late TextEditingController _searchController;
 
   @override
   void initState() {
@@ -47,14 +47,28 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
       duration: const Duration(seconds: 5),
       vsync: this,
     );
+    _searchController = TextEditingController(text: '');
     _earthController.stop();
     _moonController.stop();
     _marsController.stop();
-    // _connectToLG();
   }
 
   Future<void> _execute() async {
     SSHSession? session = await SSH(ref: ref).execute();
+    if (session != null) {
+      print(session.stdout);
+    }
+  }
+
+  Future<void> _search(String place) async {
+    SSHSession? session = await SSH(ref: ref).search(place);
+    if (session != null) {
+      print(session.stdout);
+    }
+  }
+
+  Future<void> _relaunchLG() async {
+    SSHSession? session = await SSH(ref: ref).relunchLG();
     if (session != null) {
       print(session.stdout);
     }
@@ -90,11 +104,36 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
     });
   }
 
+  Widget menuButton(String text, Function onPressed) {
+    return Container(
+      height: 150,
+      width: 200,
+      padding: EdgeInsets.all(10),
+      child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor:
+                  MaterialStateProperty.all(ThemesDark().tabBarColor),
+              foregroundColor:
+                  MaterialStateProperty.all(ThemesDark().oppositeColor),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0)))),
+          onPressed: () {
+            onPressed();
+          },
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 20),
+          )),
+    );
+  }
+
   @override
   void dispose() {
     _earthController.dispose();
     _moonController.dispose();
     _marsController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -164,15 +203,32 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                 ],
               ),
             ),
+            Center(
+              child: Container(
+                height: 70,
+                width: 300,
+                child: TextFormField(
+                  style: TextStyle(
+                      color: ThemesDark().oppositeColor, fontSize: 20),
+                  decoration: InputDecoration(
+                    labelText: 'Custom Search',
+                    labelStyle: TextStyle(color: ThemesDark().oppositeColor),
+                  ),
+                  controller: _searchController,
+                ),
+              ),
+            ),
             Container(
-              height: 300,
+              height: 200,
               width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  menuButton("Navigate To Lleida", _execute),
                   Container(
                     height: 150,
                     width: 200,
+                    padding: EdgeInsets.all(10),
                     child: ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
@@ -184,60 +240,18 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
                                 RoundedRectangleBorder(
                                     borderRadius:
                                         BorderRadius.circular(40.0)))),
-                        onPressed: () {},
-                        child: const Text("Navigate To Lleida")),
+                        onPressed: () {
+                          _search(_searchController.text);
+                        },
+                        child: const Text(
+                          "Custom Search",
+                          style: TextStyle(fontSize: 20),
+                        )),
                   ),
-                  Container(
-                    height: 150,
-                    width: 200,
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                ThemesDark().tabBarColor),
-                            foregroundColor: MaterialStateProperty.all(
-                                ThemesDark().oppositeColor),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(40.0)))),
-                        onPressed: () {},
-                        child: const Text("Shutdown LG")),
-                  ),
-                  Container(
-                    height: 150,
-                    width: 200,
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                ThemesDark().tabBarColor),
-                            foregroundColor: MaterialStateProperty.all(
-                                ThemesDark().oppositeColor),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(40.0)))),
-                        onPressed: () {},
-                        child: const Text("Reboot LG")),
-                  ),
-                  Container(
-                    height: 150,
-                    width: 200,
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                ThemesDark().tabBarColor),
-                            foregroundColor: MaterialStateProperty.all(
-                                ThemesDark().oppositeColor),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(40.0)))),
-                        onPressed: () {},
-                        child: const Text("Disconnect from LG")),
-                  ),
+                  menuButton("Relaunch LG", _relaunchLG),
+                  menuButton("Disconnect from LG", () {
+                    ref.read(connectedProvider.notifier).state = false;
+                  }),
                 ],
               ),
             ),

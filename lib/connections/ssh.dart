@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lg_kiss_app/providers/connection_providers.dart';
 
@@ -51,6 +50,21 @@ class SSH {
     }
   }
 
+  Future<SSHSession?> relunchLG() async {
+    try {
+      _client = ref.read(sshClientProvider);
+      if (_client == null) {
+        print('SSH client is not initialized.');
+        return null;
+      }
+      final session = await _client!.execute('lg-relaunch');
+      return session;
+    } catch (e) {
+      print('An error occurred while executing the command: $e');
+      return null;
+    }
+  }
+
   Future<SSHSession?> execute() async {
     try {
       _client = ref.read(sshClientProvider);
@@ -61,6 +75,22 @@ class SSH {
       //   TODO 4: Execute a demo command: echo "search=Lleida" >/tmp/query.txt
       final session =
           await _client!.execute('echo "search=Lleida" >/tmp/query.txt');
+      return session;
+    } catch (e) {
+      print('An error occurred while executing the command: $e');
+      return null;
+    }
+  }
+
+  Future<SSHSession?> search(String place) async {
+    try {
+      _client = ref.read(sshClientProvider);
+      if (_client == null) {
+        print('SSH client is not initialized.');
+        return null;
+      }
+      final session =
+          await _client!.execute('echo "search=$place" >/tmp/query.txt');
       return session;
     } catch (e) {
       print('An error occurred while executing the command: $e');

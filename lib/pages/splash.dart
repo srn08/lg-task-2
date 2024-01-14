@@ -16,7 +16,8 @@ class _SplashScreenState extends State<SplashScreen> {
       await Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => const MyHomePage(title: 'LG KISS App')));
+              builder: (context) => const MyHomePage(
+                  title: 'LG KISS App - Liquid Galaxy Control Tool')));
     });
   }
 
