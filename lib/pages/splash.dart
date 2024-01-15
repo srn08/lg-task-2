@@ -23,6 +23,27 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Image.asset('assets/images/splash.png'));
+    return Scaffold(
+      body: Center(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Image.asset('assets/images/splash.png'),
+          const Text(
+            "Made for KISS App Contest in Flutter for Liquid Galaxy Community",
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          ),
+          const Text(
+            "Developed by: Shaunak Nagrecha",
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          ),
+          const Text(
+            "Github: github.com/srn08/lg-kiss-app",
+            style: TextStyle(color: Colors.white, fontSize: 25),
+          ),
+        ],
+      )),
+    );
   }
 }

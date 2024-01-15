@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:dartssh2/dartssh2.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -34,7 +32,7 @@ class SSH {
     try {
       final socket = await SSHSocket.connect(
           ref.read(ipProvider), ref.read(portProvider),
-          timeout: Duration(seconds: 5));
+          timeout: const Duration(seconds: 5));
       ref.read(sshClientProvider.notifier).state = SSHClient(
         socket,
         username: ref.read(usernameProvider),
@@ -72,7 +70,6 @@ class SSH {
         print('SSH client is not initialized.');
         return null;
       }
-      //   TODO 4: Execute a demo command: echo "search=Lleida" >/tmp/query.txt
       final session =
           await _client!.execute('echo "search=Lleida" >/tmp/query.txt');
       return session;
