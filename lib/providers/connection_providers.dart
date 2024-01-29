@@ -11,3 +11,4 @@ StateProvider<String> passwordProvider = StateProvider((ref) => 'lg1234');
 StateProvider<int> portProvider = StateProvider((ref) => 22);
 StateProvider<int> rigsProvider = StateProvider((ref) => 3);
 StateProvider<bool> connectedProvider = StateProvider((ref) => false);
+StateProvider<int> rightmostRigProvider = StateProvider((ref) => 2);

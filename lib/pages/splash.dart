@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Image.asset('assets/images/splash.png'),
           const Text(
-            "Made for KISS App Contest in Flutter for Liquid Galaxy Community",
+            "Liquid Galaxy Pre-Selection Task for GSoC 2024",
             style: TextStyle(color: Colors.white, fontSize: 30),
           ),
           const Text(
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
             style: TextStyle(color: Colors.white, fontSize: 30),
           ),
           const Text(
-            "Github: github.com/srn08/lg-kiss-app",
+            "REPO GOES HERE",
             style: TextStyle(color: Colors.white, fontSize: 25),
           ),
         ],

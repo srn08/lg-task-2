@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lg_kiss_app/providers/connection_providers.dart';
+import 'package:lg_kiss_app/constants/kml_makers.dart';
 
 class SSH {
   final WidgetRef ref;
@@ -48,18 +49,54 @@ class SSH {
     }
   }
 
-  Future<SSHSession?> relunchLG() async {
+  flyToOrbit(context, double latitude, double longitude, double zoom,
+      double tilt, double bearing) async {
     try {
-      _client = ref.read(sshClientProvider);
-      if (_client == null) {
-        print('SSH client is not initialized.');
-        return null;
+      await ref.read(sshClientProvider)?.run(
+          'echo "flytoview=${KMLMakers.orbitLookAtLinear(latitude, longitude, zoom, tilt, bearing)}" > /tmp/query.txt');
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  relaunchLG(context) async {
+    try {
+      for (var i = 1; i <= ref.read(rigsProvider); i++) {
+        String cmd = """RELAUNCH_CMD="\\
+          if [ -f /etc/init/lxdm.conf ]; then
+            export SERVICE=lxdm
+          elif [ -f /etc/init/lightdm.conf ]; then
+            export SERVICE=lightdm
+          else
+            exit 1
+          fi
+          if  [[ \\\$(service \\\$SERVICE status) =~ 'stop' ]]; then
+            echo ${ref.read(passwordProvider)} | sudo -S service \\\${SERVICE} start
+          else
+            echo ${ref.read(passwordProvider)} | sudo -S service \\\${SERVICE} restart
+          fi
+          " && sshpass -p ${ref.read(passwordProvider)} ssh -x -t lg@lg$i "\$RELAUNCH_CMD\"""";
+        await ref.read(sshClientProvider)?.run(
+            '"/home/${ref.read(usernameProvider)}/bin/lg-relaunch" > /home/${ref.read(usernameProvider)}/log.txt');
+        await ref.read(sshClientProvider)?.run(cmd);
       }
-      final session = await _client!.execute('lg-relaunch');
-      return session;
-    } catch (e) {
-      print('An error occurred while executing the command: $e');
-      return null;
+    } catch (error) {
+      showSnackBar(
+          context: context, message: error.toString(), color: Colors.red);
+    }
+  }
+
+  Future<String> renderInSlave(context, int slaveNo, String kml) async {
+    try {
+      await ref
+          .read(sshClientProvider)
+          ?.run("echo '$kml' > /var/www/html/kml/slave_$slaveNo.kml");
+      return kml;
+    } catch (error) {
+      showSnackBar(
+          context: context, message: error.toString(), color: Colors.red);
+      // return BalloonMakers.blankBalloon();
+      return "";
     }
   }
 
@@ -88,55 +125,6 @@ class SSH {
       }
       final session =
           await _client!.execute('echo "search=$place" >/tmp/query.txt');
-      return session;
-    } catch (e) {
-      print('An error occurred while executing the command: $e');
-      return null;
-    }
-  }
-
-  Future<SSHSession?> planetMoon() async {
-    try {
-      _client = ref.read(sshClientProvider);
-      if (_client == null) {
-        print('SSH client is not initialized.');
-        return null;
-      }
-      final session =
-          await _client!.execute('echo "planet=moon" >/tmp/query.txt');
-      return session;
-    } catch (e) {
-      print('An error occurred while executing the command: $e');
-      return null;
-    }
-  }
-
-  Future<SSHSession?> planetMars() async {
-    try {
-      _client = ref.read(sshClientProvider);
-      if (_client == null) {
-        print('SSH client is not initialized.');
-        return null;
-      }
-      final session = await ref
-          .read(sshClientProvider)!
-          .execute('echo "planet=mars" >/tmp/query.txt');
-      return session;
-    } catch (e) {
-      print('An error occurred while executing the command: $e');
-      return null;
-    }
-  }
-
-  Future<SSHSession?> planetEarth() async {
-    try {
-      _client = ref.read(sshClientProvider);
-      if (_client == null) {
-        print('SSH client is not initialized.');
-        return null;
-      }
-      final session =
-          await _client!.execute('echo "planet=earth" >/tmp/query.txt');
       return session;
     } catch (e) {
       print('An error occurred while executing the command: $e');
