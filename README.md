@@ -1,4 +1,4 @@
-# lg_kiss_app
+# lg_task_2
 
 A new Flutter project.
 
