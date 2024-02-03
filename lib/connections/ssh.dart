@@ -12,6 +12,7 @@ class SSH {
 
   SSHClient? _client;
 
+// show snackbar
   showSnackBar(
           {required BuildContext context,
           required String message,
@@ -49,16 +50,18 @@ class SSH {
     }
   }
 
+  // function called by orbitPlay function to fly to orbit
   flyToOrbit(context, double latitude, double longitude, double zoom,
       double tilt, double bearing) async {
     try {
       await ref.read(sshClientProvider)?.run(
-          'echo "flytoview=${KMLMakers.orbitLookAtLinear(latitude, longitude, zoom, tilt, bearing)}" > /tmp/query.txt');
+          'echo "flytoview=${KMLStrings.orbitLookAtLinear(latitude, longitude, zoom, tilt, bearing)}" > /tmp/query.txt');
     } catch (error) {
       print(error);
     }
   }
 
+// function to relaunch liquid galaxy
   relaunchLG(context) async {
     try {
       for (var i = 1; i <= ref.read(rigsProvider); i++) {
@@ -86,6 +89,7 @@ class SSH {
     }
   }
 
+// function to render kml in slave
   Future<String> renderInSlave(context, int slaveNo, String kml) async {
     try {
       await ref
@@ -95,7 +99,6 @@ class SSH {
     } catch (error) {
       showSnackBar(
           context: context, message: error.toString(), color: Colors.red);
-      // return BalloonMakers.blankBalloon();
       return "";
     }
   }
@@ -116,6 +119,7 @@ class SSH {
     }
   }
 
+// function to search a place
   Future<SSHSession?> search(String place) async {
     try {
       _client = ref.read(sshClientProvider);

@@ -1,8 +1,9 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:dartssh2/dartssh2.dart';
 import 'package:lg_kiss_app/connections/ssh.dart';
 import 'package:lg_kiss_app/constants/constants.dart';
-import 'package:lg_kiss_app/constants/theme.dart';
 import 'package:lg_kiss_app/pages/settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lg_kiss_app/providers/connection_providers.dart';
@@ -24,40 +25,14 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
     super.initState();
   }
 
-  bool orbitPlaying = false;
-
-  // Future<void> _execute() async {
-  //   SSHSession? session = await SSH(ref: ref).execute();
-  //   if (session != null) {
-  //     print(session.stdout);
-  //   }
-  // }
   orbitPlay() async {
-    setState(() {
-      orbitPlaying = true;
-    });
-    // SSH(ref: ref).flyTo(context, newMapPosition.target.latitude,
-    //     newMapPosition.target.longitude, Const.appZoomScale.zoomLG, 0, 0);
     await Future.delayed(const Duration(milliseconds: 1000));
     for (int i = 0; i <= 360; i += 10) {
-      if (!mounted) {
-        return;
-      }
-      if (!orbitPlaying) {
-        break;
-      }
+      // ignore: use_build_context_synchronously
       SSH(ref: ref)
           .flyToOrbit(context, 19.076090, 72.877426, 1000, 60, i.toDouble());
       await Future.delayed(const Duration(milliseconds: 1000));
     }
-    if (!mounted) {
-      return;
-    }
-    // SSH(ref: ref).flyTo(context, newMapPosition.target.latitude,
-    //     newMapPosition.target.longitude, Const.appZoomScale.zoomLG, 0, 0);
-    setState(() {
-      orbitPlaying = false;
-    });
   }
 
   Future<void> _navigateToMumbai() async {
@@ -82,9 +57,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       child: ElevatedButton(
           style: ButtonStyle(
               backgroundColor:
-                  MaterialStateProperty.all(ThemesDark().tabBarColor),
-              foregroundColor:
-                  MaterialStateProperty.all(ThemesDark().oppositeColor),
+                  MaterialStateProperty.all(const Color(0xFF1E2026)),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40.0)))),
@@ -120,9 +94,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: const Text("Confirmation"),
-      content: Text((ind == 1)
-          ? "Are you sure you want to relaunch LG?"
-          : "Are you sure you want to disconnect from LG?"),
+      content: const Text("Are you sure you want to reboot LG?"),
       actions: [
         cancelButton,
         continueButton,
@@ -146,12 +118,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
   Widget build(BuildContext context) {
     bool connected = ref.watch(connectedProvider);
     return Scaffold(
-      backgroundColor: ThemesDark().normalColor,
+      backgroundColor: const Color(0xFF15151A),
       appBar: AppBar(
-        backgroundColor: ThemesDark().tabBarColor,
+        backgroundColor: const Color(0xFF1E2026),
         title: Text(
           widget.title,
-          style: TextStyle(color: ThemesDark().oppositeColor),
+          style: const TextStyle(color: Colors.white),
         ),
         leading: IconButton(
           icon: const Icon(Icons.settings),
@@ -162,14 +134,18 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                   builder: (context) => const Settings(),
                 ));
           },
-          color: ThemesDark().oppositeColor,
+          color: Colors.white,
         ),
       ),
       body: Center(
         child: ListView(
           children: <Widget>[
-            Container(child: ConnectionFlag(status: connected)),
-            Container(
+            ConnectionFlag(status: connected),
+            SizedBox(
+              height: 400,
+              child: Image.asset('assets/images/splash.png'),
+            ),
+            SizedBox(
               height: 200,
               width: double.infinity,
               child: Row(
@@ -187,9 +163,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                     child: ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
-                                ThemesDark().tabBarColor),
-                            foregroundColor: MaterialStateProperty.all(
-                                ThemesDark().oppositeColor),
+                                const Color(0xFF1E2026)),
+                            foregroundColor:
+                                MaterialStateProperty.all(Colors.white),
                             shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -200,7 +176,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                           await SSH(ref: ref).renderInSlave(
                               context,
                               ref.read(rightmostRigProvider),
-                              KMLMakers.screenOverlayImage(Constants.customImg,
+                              KMLStrings.screenOverlayImage(Constants.customImg,
                                   Constants.splashAspectRatio));
                         },
                         child: const Text(

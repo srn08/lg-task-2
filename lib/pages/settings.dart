@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lg_kiss_app/providers/connection_providers.dart';
-import 'package:lg_kiss_app/constants/theme.dart';
 import 'package:lg_kiss_app/connections/ssh.dart';
-import 'package:dartssh2/dartssh2.dart';
 import 'package:lg_kiss_app/components/connection_flag.dart';
 
 class Settings extends ConsumerStatefulWidget {
@@ -42,13 +40,6 @@ class _SettingsState extends ConsumerState<Settings> {
     ref.read(connectedProvider.notifier).state = result!;
   }
 
-  Future<void> _execute() async {
-    SSHSession? session = await ssh.execute();
-    if (session != null) {
-      print(session.stdout);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -60,11 +51,11 @@ class _SettingsState extends ConsumerState<Settings> {
     return Padding(
       padding: const EdgeInsets.all(7),
       child: TextFormField(
-        style: TextStyle(color: ThemesDark().oppositeColor),
+        style: const TextStyle(color: Colors.white),
         controller: controller,
         decoration: InputDecoration(
           labelText: labelText,
-          labelStyle: TextStyle(color: ThemesDark().oppositeColor),
+          labelStyle: const TextStyle(color: Colors.white),
         ),
       ),
     );
@@ -85,7 +76,7 @@ class _SettingsState extends ConsumerState<Settings> {
     bool isConnectedToLg = ref.watch(connectedProvider);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ThemesDark().normalColor,
+        backgroundColor: const Color(0xFF15151A),
         body: Padding(
           padding: const EdgeInsets.all(40),
           child: Column(
@@ -101,13 +92,7 @@ class _SettingsState extends ConsumerState<Settings> {
                   updateProviders();
                   if (!isConnectedToLg) _connectToLG();
                 },
-                child: Text('Connect to LG'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _execute();
-                },
-                child: Text('Execute'),
+                child: const Text('Connect to LG'),
               ),
             ],
           ),

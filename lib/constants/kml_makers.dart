@@ -1,4 +1,4 @@
-class KMLMakers {
+class KMLStrings {
   static String orbitLookAtLinear(double latitude, double longitude,
           double zoom, double tilt, double bearing) =>
       '<gx:duration>2</gx:duration><gx:flyToMode>smooth</gx:flyToMode><LookAt><longitude>$longitude</longitude><latitude>$latitude</latitude><range>$zoom</range><tilt>$tilt</tilt><heading>$bearing</heading><gx:altitudeMode>relativeToGround</gx:altitudeMode></LookAt>';
@@ -6,10 +6,10 @@ class KMLMakers {
   static screenOverlayImage(String imageUrl, double factor) =>
       '''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
-    <Document id ="logo">
-         <name>Pre Selection Task</name>
+    <Document id ="bubble">
+         <name>Pre Selection Task 2 - Shaunak Nagrecha</name>
              <Folder>
-                  <name>Splash Screen</name>
+                  <name>Button 4</name>
                   <ScreenOverlay>
                       <name>Logo</name>
                       <Icon><href>$imageUrl</href> </Icon>

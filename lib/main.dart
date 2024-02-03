@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lg_kiss_app/constants/theme.dart';
 import 'package:lg_kiss_app/pages/splash.dart';
 
 void main() {
@@ -23,18 +22,18 @@ class MyApp extends ConsumerWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         hintColor: Colors.white,
-        scaffoldBackgroundColor: ThemesDark().normalColor,
+        scaffoldBackgroundColor: const Color(0xFF15151A),
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-              color: ThemesDark().oppositeColor,
+            borderSide: const BorderSide(
+              color: Colors.white,
             ),
           ),
-          hintStyle: TextStyle(color: ThemesDark().oppositeColor),
+          hintStyle: const TextStyle(color: Colors.white),
         ),
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }

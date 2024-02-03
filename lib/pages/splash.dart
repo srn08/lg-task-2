@@ -17,7 +17,8 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => const MyHomePage(
-                  title: 'LG KISS App - Liquid Galaxy Control Tool')));
+                  title:
+                      'Pre Selection Task 2 for GSoC 2024 - Shaunak Nagrecha ')));
     });
   }
 
@@ -39,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
             style: TextStyle(color: Colors.white, fontSize: 30),
           ),
           const Text(
-            "REPO GOES HERE",
+            "Github Url : https://github.com/srn08/lg-task-2",
             style: TextStyle(color: Colors.white, fontSize: 25),
           ),
         ],
